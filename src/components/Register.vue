@@ -34,7 +34,7 @@ const formData = reactive({});
                     </div>
 
                     <div>
-                        <input @click.prvent="auth.register(formData)" class="w-full bg-blue-600 py-2 rounded-md text-white font-bold cursor-pointer" type="submit" value="Sign Up">
+                        <input @click.prvent="auth.register(formData)" class="w-full bg-pink-600 py-2 rounded-md text-white font-bold cursor-pointer" type="submit" value="Sign Up">
                     </div>
                 </form>
                 

@@ -1,68 +1,72 @@
 <script setup>
-  import { AppStore } from '../store/store';
-  import { onMounted, reactive,ref } from 'vue';
-  const store = AppStore();
+import {ref,reactive} from 'vue';
 
-  const inputData = ref('')
-  const isChecked = ref(null)
+import todoStore from '../store/todoStore';
+const todo = todoStore();
 
-  function clearInput(){
-    inputData.value = ''
-  }
-  
-  function insertInputData(){
-      store.addProject(inputData, clearInput)
-  }
 
-  onMounted(()=>{
-    store.inCompleteProjectsFunction();
-    store.completeProjectsFunction();
-  });
+// const modalOpen = ref(false)
+
+const formData = reactive({
+    todo:'',
+    completed:false,
+    userId:1
+});
+
+function add(){
+    todo.action.add(formData);
+    formData.todo = '';
+}
+
+const doneFormData = {
+    completed:true
+}
+
 </script>
 
 <template>
-    <div class="w-full flex items-center justify-center bg-teal-lightest font-sans" style="height: 600px;">
-      <div class="bg-white rounded shadow p-6 m-4 w-full lg:w-3/4 lg:max-w-lg">
-        <div class="mb-4">
-          <h1 class="text-grey-darkest">Todo App</h1>
-          <div class="flex mt-4">
-            <input v-model="inputData" class="shadow appearance-none border rounded w-full py-2 px-3 mr-4 text-grey-darker"
-              placeholder="Add Todo">
-            <button @click="insertInputData()"
-              class="flex-no-shrink p-2 border-2 rounded text-teal border-teal hover:text-white hover:bg-teal">Add</button>
-          </div>
+    <div class="min-h-screen w-screen bg-gradient-to-r from-red-300 to-sky-300 flex flex-col gap-2 p-10 items-center">
+        <div class="max-w-2xl w-full bg-white p-2 rounded-sm shadow-lg">
+            <form enctype="multipart/form-data" class="grid grid-cols-12 gap-2">
+                <div class="col-span-9">
+                    <input v-model="formData.todo" class="w-full p-2 border focus:outline-none focus:border-green-200 focus:shadow-lg" type="text" name="task" placeholder="Enter new Task Description">
+                </div>
+                <div class="col-span-3 flex items-center">
+                    <input @click.prevent="add()" class="w-full px-5 py-2 bg-pink-400 text-white rounded-md font-semibold hover:bg-sky-500  hover:cursor-pointer" type="submit" name="submit" value="Add new Task">
+                </div>
+            </form>
         </div>
-        <div>
 
-          
-          <div class="flex mb-4 items-center" v-for="(project, index) in store.inCompleteProject" :key="index">
-            <p class="w-full text-grey-darkest">{{ project.name }}</p>
+        <div class="max-w-2xl w-full bg-white p-2 raounded-sm shadow-lg">
+            <table class="w-full table-fixed border-collapse border-slate-950 hover:border-blue-950">
+                <thead>
+                    <tr>
+                        <th class="p-2 border border-slate-300">ToDo ({{ todo.totalPending }})</th>
+                        <th class="p-2 border border-slate-300">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-if="todo.totalPending == 0">
+                        <td colspan="2">No pending task available</td>
+                    </tr>
+                    <tr v-for="(pending, index) in todo.pending" :key="index">
+                        <td class="p-2 border border-slate-300">
+                        {{ pending.todo }}
+                        </td>
+                        <td class="p-2 border border-slate-300 flex gap-1 justify-end">
+                            <form enctype="multipart/form-data">
+                                <input @click.prevent="todo.action.update(pending.id, doneFormData)" type="submit" name="submit" value="Mark as Done" class="px-2 bg-blue-400 text-white rounded-md hover:bg-sky-600 font-semibold hover:cursor-pointer">
+                            </form>
 
-            <button
-             @click="store.doneAsComplete(project.id)" type="button" class="flex-no-shrink p-2 ml-4 mr-2 border-2 rounded hover:text-white text-green border-green hover:bg-green">
-             Done
-            </button>
-
-            <button type="button" @click="store.deleteProject(project.id)"
-              class="flex-no-shrink p-2 ml-2 border-2 rounded text-red border-red hover:text-white hover:bg-red">X</button>
-          </div>
-          
-          <br><br>
-          
-          <div class="flex mb-4 items-center" v-for="(project, index) in store.completeProject" :key="index">
-            <p class="w-full line-through text-green">{{ project.name }}</p>
-            <button
-            @click="store.doneAsInComplete(project.id)" type="button" class="flex-no-shrink p-2 ml-4 mr-2 border-2 rounded hover:text-white text-grey border-grey hover:bg-grey">Not
-              Done</button>
-            <button type="button" @click="store.deleteProject(project.id)"
-              class="flex-no-shrink p-2 ml-2 border-2 rounded text-red border-red hover:text-white hover:bg-red">Remove</button>
-          </div>
-
+                            <form  enctype="multipart/form-data">
+                                <input @click.prevent="todo.action.delete(pending.id)" type="submit" name="submit" value="Delete" class="px-2 bg-red-400 text-white rounded-md hover:bg-red-600 font-semibold hover:cursor-pointer">
+                            </form>
+                        </td>
+                    </tr>                    
+                </tbody>
+            </table>
         </div>
-      </div>
     </div>
+
+   
 </template>
-
-<style scoped>
-
-</style>

@@ -1,15 +1,16 @@
 import { createRouter, createWebHistory } from "vue-router";
 import store from "../store/authStore";
-import HomeComponent from '../components/Home.vue';
 import LoginComponent from '../components/Login.vue';
 import RegisterComponent from '../components/Register.vue';
 import TodosComponent from '../components/Todos.vue';
+import CompletedComponent from '../components/Completed.vue';
+
 
 const routes = [
     {
         path : '/',
-        name : 'Home',
-        component : HomeComponent
+        name : 'Login',
+        component : LoginComponent
     },
 
     {
@@ -29,7 +30,15 @@ const routes = [
         name : 'Todos',
         component : TodosComponent,
         meta : {
-            isAuthenticate : true
+            isAuthenticated : true
+        }
+    },
+    {
+        path : '/completed',
+        name : 'Completed',
+        component : CompletedComponent,
+        meta : {
+            isAuthenticated : true
         }
     },
 ]
@@ -43,7 +52,7 @@ const router = createRouter({
 
 router.beforeEach((to,from,next)=>{
     const state = store()
-    if(to.meta.isAuthenticate == true && !state.isAuthenticate){
+    if(to.meta.isAuthenticated == true && !state.isAuthenticated){
         next('/login')
     }else{
         next()
