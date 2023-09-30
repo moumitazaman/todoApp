@@ -20,7 +20,7 @@ const authStore = defineStore('auth', () => {
             localStorage.setItem('isAuthenticated',true);
             isAuthenticated.value = true;
             todoStore().action.fetch();
-            router.push('/todo');
+            router.push('/todos');
         }
         else{
             console.log('Username or Password is incorrect');
@@ -30,10 +30,14 @@ const authStore = defineStore('auth', () => {
 
     const register = (formData) => {
         if(localStorage.setItem('user', JSON.stringify(formData))){
+            localStorage.setItem('isAuthenticated',true);
+            isAuthenticated.value = true;
+            todoStore().action.fetch();
             return formData;
         }
 
-        return false;
+        router.push('/todos');
+
     };
 
     const logout = () => {

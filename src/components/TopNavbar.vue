@@ -29,7 +29,7 @@
       </router-link>
 
       <div v-if="state.user" class="block mt-4 lg:inline-block lg:mt-0 text-pink-200 hover:text-white mr-4">
-        ( {{ state.user?.name }} )
+        ( {{ state.user?.fullName }} )
       </div>
 
       <router-link v-if="!state.isAuthenticated" :to="{name : 'Login'}" class="block mt-4 lg:inline-block lg:mt-0 text-pink-200 hover:text-white mr-4" >
